@@ -44,7 +44,7 @@ exports.login=(req,res,next)=>{
                         throw new Error(err)
                     }
                     if(result===true){
-                        res.status(200).send({success:true,message:'User Login successfully'})
+                        res.status(200).send({success:true,message:'User Login successfully',redirectUrl: '/expense/add-expense'})
                     }
                     else{
                         res.status(401).send({success:false,message:'Password do not match'})

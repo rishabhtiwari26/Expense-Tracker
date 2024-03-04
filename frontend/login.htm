@@ -27,6 +27,7 @@
                     console.log(res)
                     if(res.data.success===true){
                         alert('Login successfully')
+                        location.replace('/addExpense.htm')
                     }
                 })
                 .catch(e=>{
