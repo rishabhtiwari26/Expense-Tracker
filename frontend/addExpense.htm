@@ -35,6 +35,7 @@
                 amount:document.getElementById('amount').value,
                 description:document.getElementById('description').value,
                 cat:document.getElementById('cat').value,
+                token:localStorage.getItem('token')
             }
             console.log(obj)
             axios.post('http://localhost:3000/expense/add-expense',obj).then((expense)=>{
@@ -68,7 +69,8 @@
         }
         function deleteExpense(id){
             const obj={
-                id:id
+                id:id,
+                token:localStorage.getItem('token')
             }
             axios.post('http://localhost:3000/expense/delete-expense',obj)
         }

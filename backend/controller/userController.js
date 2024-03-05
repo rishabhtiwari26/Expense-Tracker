@@ -1,10 +1,16 @@
 const User = require('../model/userModel')
 const bcrypt = require('bcrypt')
+const jwt =require('jsonwebtoken')
 let count=1
+
+function generateAccessToken(id){
+    return jwt.sign({userid:id},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+}
 exports.signUp=(req,res,next)=>{
     // console.log(count,req.body)
     count+=1
     const saltRounds=10
+    console.log(req.body,req.body.id)
     const {name,email,password}=req.body
     bcrypt.hash(password,saltRounds,(err,hash)=>{
         console.log(err)
@@ -33,7 +39,7 @@ exports.signUp=(req,res,next)=>{
 }
 
 exports.login=(req,res,next)=>{
-    // console.log(req.body)
+    // console.log(req.body,req.body.id)
     User.findOne({where:{email:req.body.email}})
         .then(user=>{
             try{if(user){
@@ -44,7 +50,7 @@ exports.login=(req,res,next)=>{
                         throw new Error(err)
                     }
                     if(result===true){
-                        res.status(200).send({success:true,message:'User Login successfully',redirectUrl: '/expense/add-expense'})
+                        res.status(200).send({success:true,message:'User Login successfully',redirectUrl: '/expense/add-expense',token:generateAccessToken(user.id)})
                     }
                     else{
                         res.status(401).send({success:false,message:'Password do not match'})

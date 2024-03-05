@@ -22,12 +22,14 @@
                 password:document.getElementById('password').value
             }
             console.log(obj)
+            
             axios.post('http://localhost:3000/user/login',obj)
                 .then(res=>{  
                     console.log(res)
                     if(res.data.success===true){
                         alert('Login successfully')
-                        location.replace('/addExpense.htm')
+                        localStorage.setItem('token',res.data.token)
+                        window.location.href= '/addExpense.htm'
                     }
                 })
                 .catch(e=>{
