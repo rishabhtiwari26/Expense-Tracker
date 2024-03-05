@@ -38,13 +38,15 @@
                 token:localStorage.getItem('token')
             }
             console.log(obj)
-            axios.post('http://localhost:3000/expense/add-expense',obj).then((expense)=>{
+            axios.post('http://localhost:3000/expense/add-expense',obj,{headers:{'Authorization':localStorage.getItem('token')}})
+            .then((expense)=>{
                 console.log(expense)
             } 
             ).catch(e=>console.log(e))
         }
         async function getExpense(){
-            const expenses = await axios.get('http://localhost:3000/expense/get-expense')
+            const token=localStorage.getItem('token')
+            const expenses = await axios.get('http://localhost:3000/expense/get-expense',{headers:{'Authorization':token}})
             
             expenses.data.forEach(expense=>{
                 let li= document.createElement('li')

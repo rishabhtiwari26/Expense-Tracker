@@ -5,7 +5,11 @@ function decodedId(token){
 }
 
 exports.getExpense=(req,res,next)=>{
-    expense.findAll()
+    console.log(req.headers.authorization)
+    const userId=decodedId(req.headers.authorization).userid
+    console.log('userId',userId)
+    
+    expense.findAll({where:{userDetailId:userId}})
         .then(expenses=>{
             // console.log(expenses)
             res.send(expenses)
@@ -14,12 +18,12 @@ exports.getExpense=(req,res,next)=>{
 }
 
 exports.addExpense=(req,res,next)=>{
-    try{console.log(req.body,decodedId(req.body.token))
+    try{console.log(req.body,decodedId(req.headers.authorization))
         expense.create({
         expenseAmount:req.body.amount,
         description:req.body.description,
         category:req.body.cat,
-        userDetailId:decodedId(req.body.token).userid
+        userDetailId:decodedId(req.headers.authorization).userid
     }).then(expenseDetail=>{
         console.log('Expense Created')
         res.send(expenseDetail)
@@ -29,14 +33,19 @@ exports.addExpense=(req,res,next)=>{
     }
 }
 exports.deleteExpense=(req,res,next)=>{
-    const decodedId=jwt.verify(req.body.token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
-    console.log(decodedId)
+    
+    
     console.log(req.body)
-    expense.findByPk(decodedId.userid).then(expenseFound=>{
-        
+    expense.findByPk(req.body.id).then(expenseFound=>{
+        if(decodedId(req.body.token).userid==expenseFound.userDetailId){
+            expenseFound.destroy()
+            res.status(200).send({success:true,message:'Expense Deleted'})
+        }
+        else{
+            res.status(401).send({success:false,message:'Not Your Expense'})
+        }
 
-        res.send(expenseFound)
-        expenseFound.destroy()
+        
     })
     .catch(e=>console.log(e))
 }
