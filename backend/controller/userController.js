@@ -2,13 +2,14 @@ const User = require('../model/userModel')
 const bcrypt = require('bcrypt')
 const jwt =require('jsonwebtoken')
 let count=1
-
+// console.log(process.env.TOKEN_SECRET)
 function generateAccessToken(id){
     return jwt.sign({userid:id},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
 exports.signUp=(req,res,next)=>{
     // console.log(count,req.body)
     count+=1
+    
     const saltRounds=10
     console.log(req.body,req.body.id)
     const {name,email,password}=req.body
