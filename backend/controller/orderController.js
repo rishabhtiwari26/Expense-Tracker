@@ -2,6 +2,9 @@ const order = require('../model/orderModel')
 const Razorpay = require('razorpay')
 const user=require('../model/userModel')
 const jwt =require('jsonwebtoken')
+function generateAccessToken(id,ispremiumuser){
+    return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+}
 function decodedId(token){
     return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
@@ -49,7 +52,7 @@ exports.updateMembership=(req,res,next)=>{
                     user.findOne({where:{id:decodedId(req.headers.authorization).userid}})
                     .then((user)=>{
                         user.update({ispremiumuser:true}).then(()=>{
-                            return res.status(202).json({sucess:true,message:'Transaction Successful'})
+                            return res.status(202).json({sucess:true,message:'Transaction Successful',token:generateAccessToken(user.id,user.ispremiumuser)})
                         }).catch(e=>{
                             throw new Error(e)
                         })

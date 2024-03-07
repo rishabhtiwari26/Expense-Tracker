@@ -9,6 +9,7 @@ const order=require('./model/orderModel')
 const userRoute=require('./route/userRoute')
 const expenseRoute=require('./route/expenseRoute')
 const orderRoute=require('./route/orderRoute')
+const premiumRoute=require('./route/premiumRoute')
 
 
 
@@ -17,6 +18,7 @@ app.use(bodyParser.json())
 app.use('/user',userRoute)
 app.use('/expense',expenseRoute)
 app.use('/purchase',orderRoute)
+app.use('/premium',premiumRoute)
 
 user.hasMany(expense)
 expense.belongsTo(user,{constraint:true,onDelete:'CASCADE'})

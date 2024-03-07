@@ -27,9 +27,11 @@
                 .then(res=>{  
                     console.log(res)
                     if(res.data.success===true){
+                        console.log(res.data)
                         alert('Login successfully')
                         localStorage.setItem('token',res.data.token)
                         window.location.href= '/addExpense.htm'
+                        
                     }
                 })
                 .catch(e=>{

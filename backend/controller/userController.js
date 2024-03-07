@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt =require('jsonwebtoken')
 let count=1
 // console.log(process.env.TOKEN_SECRET)
-function generateAccessToken(id){
-    return jwt.sign({userid:id},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+function generateAccessToken(id,ispremiumuser){
+    return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
 exports.signUp=(req,res,next)=>{
     // console.log(count,req.body)
@@ -45,13 +45,13 @@ exports.login=(req,res,next)=>{
         .then(user=>{
             try{if(user){
                 // console.log(user)
-                // console.log('user.password',typeof(user.password),user.password,'req.body.password',typeof(req.body.password),req.body.password)
+                // console.log('user.password',typeof(user.password),user.password,'req.body.password',typeof(req.body.password),req.body.password,'user.ispremiumuser',user.ispremiumuser,typeof(user.ispremiumuser))
                 bcrypt.compare(req.body.password,user.password,(err,result)=>{
                     if (err){
                         throw new Error(err)
                     }
                     if(result===true){
-                        res.status(200).send({success:true,message:'User Login successfully',redirectUrl: '/expense/add-expense',token:generateAccessToken(user.id)})
+                        res.status(200).send({success:true,message:'User Login successfully',redirectUrl: '/expense/add-expense',token:generateAccessToken(user.id,user.ispremiumuser)})
                     }
                     else{
                         res.status(401).send({success:false,message:'Password do not match'})
