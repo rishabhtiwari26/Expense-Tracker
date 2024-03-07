@@ -9,13 +9,8 @@ const { use } = require('../route/userRoute');
 
 exports.showLeaderBoard= async (req,res,next)=>{
     const expenses = await user.findAll({
-        attributes: ['name', [Sequelize.fn('sum', Sequelize.col('expenseAmount')), 'totalAmount']],
-        include:[{
-            model:expense,
-            attributes:[]
-        }],
-        group: ['id'],
-        order: sequelize.literal('totalAmount DESC')
+        attributes: ['name', 'totalAmount'],
+        order:[['totalAmount','DESC']]
         
     })
     res.send(expenses)}

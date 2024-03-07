@@ -1,5 +1,6 @@
 const expense = require('../model/expenseModel')
 const jwt =require('jsonwebtoken')
+const user = require('../model/userModel')
 function decodedId(token){
     return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
@@ -25,6 +26,12 @@ exports.addExpense=(req,res,next)=>{
         category:req.body.cat,
         userDetailId:decodedId(req.headers.authorization).userid
     }).then(expenseDetail=>{
+        user.findByPk(decodedId(req.headers.authorization).userid).then(user=>{
+            console.log('line 30 ',user)
+            user.update({totalAmount:user.totalAmount+parseFloat(req.body.amount)}).then(()=>{
+                user.save()
+            })
+        }).catch(e=>console.log(e))
         console.log('Expense Created')
         res.send(expenseDetail)
     }).catch(err=>console.log(err))}
@@ -48,4 +55,8 @@ exports.deleteExpense=(req,res,next)=>{
         
     })
     .catch(e=>console.log(e))
+}
+
+exports.leaderBoard=(req,res,next)=>{
+    expense.findAll({order:[]})
 }
