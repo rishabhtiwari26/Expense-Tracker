@@ -7,35 +7,43 @@ const { use } = require('../route/userRoute');
 
 
 
-exports.showLeaderBoard=(req,res,next)=>{
-    expense.findAll({
-        attributes: ['userDetailId', [Sequelize.fn('sum', Sequelize.col('expenseAmount')), 'totalAmount']],
-        group: ['userDetailId'],
+exports.showLeaderBoard= async (req,res,next)=>{
+    const expenses = await user.findAll({
+        attributes: ['name', [Sequelize.fn('sum', Sequelize.col('expenseAmount')), 'totalAmount']],
+        include:[{
+            model:expense,
+            attributes:[]
+        }],
+        group: ['id'],
         order: sequelize.literal('totalAmount DESC')
-      }).then(results => {
-        let promises=[]
-        results.forEach(element => {
-            promises.push( user.findByPk(element.dataValues.userDetailId).then(user=>{
-                // console.log('element',element.dataValues.totalAmount,'user',user.dataValues.name)
-                return{name:user.dataValues.name,totalAmount:element.dataValues.totalAmount}
-                console.log(userDetails)
-            }).catch(e=>console.log(e))
-            )
+        
+    })
+    res.send(expenses)}
+    
+//       }).then(results => {
+//         let promises=[]
+//         results.forEach(element => {
+//             promises.push( user.findByPk(element.dataValues.userDetailId).then(user=>{
+//                 // console.log('element',element.dataValues.totalAmount,'user',user.dataValues.name)
+//                 return{name:user.dataValues.name,totalAmount:element.dataValues.totalAmount}
+//                 console.log(userDetails)
+//             }).catch(e=>console.log(e))
+//             )
             
-        });
-        Promise.all(promises).then(userDetails => {
-            const userDetailsMap = new Map();
-            userDetails.forEach(userDetail => {
-                userDetailsMap.set(userDetail.name, userDetail.totalAmount);
-            });
-        console.log('resSend',userDetails)
-        res.send(userDetails)
-    }).catch(error => {
-        console.error('Error retrieving user details:', error);
-        res.status(500).send('Error retrieving user details');
-    });
-}).catch(error => {
-    console.error('Error executing query:', error);
-    res.status(500).send('Error executing query');
-});
-}
+//         });
+//         Promise.all(promises).then(userDetails => {
+//             const userDetailsMap = new Map();
+//             userDetails.forEach(userDetail => {
+//                 userDetailsMap.set(userDetail.name, userDetail.totalAmount);
+//             });
+//         console.log('resSend',userDetails)
+//         res.send(userDetails)
+//     }).catch(error => {
+//         console.error('Error retrieving user details:', error);
+//         res.status(500).send('Error retrieving user details');
+//     });
+// }).catch(error => {
+//     console.error('Error executing query:', error);
+//     res.status(500).send('Error executing query'); 
+// });
+// }
