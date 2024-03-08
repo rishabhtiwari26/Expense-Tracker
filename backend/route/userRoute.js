@@ -6,4 +6,5 @@ route.post('/signup',userController.signUp)
 route.post('/login',userController.login)
 
 
+
 module.exports=route

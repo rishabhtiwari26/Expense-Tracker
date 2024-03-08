@@ -48,7 +48,7 @@ exports.deleteExpense=async (req,res,next)=>{
     const t= await sequelize.transaction()
     try{
         const expenseFound=await expense.findByPk(req.body.id)
-        console.log(req.headers,req.body,decodedId(req.body.token))
+        // console.log(req.headers,re   q.body,decodedId(req.body.token))
         const newUser= await user.findByPk(decodedId(req.body.token).userid)
         const updatedUser= await newUser.update({
             totalAmount:newUser.totalAmount-parseFloat(expenseFound.expenseAmount)
