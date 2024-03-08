@@ -1,6 +1,7 @@
 const expense = require('../model/expenseModel')
 const jwt =require('jsonwebtoken')
 const user = require('../model/userModel')
+const sequelize = require('../util/database')
 function decodedId(token){
     return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
@@ -8,7 +9,7 @@ function decodedId(token){
 exports.getExpense=(req,res,next)=>{
     console.log(req.headers.authorization)
     const userId=decodedId(req.headers.authorization).userid
-    console.log('userId',userId)
+    // console.log('userId',userId)
     
     expense.findAll({where:{userDetailId:userId}})
         .then(expenses=>{
@@ -18,45 +19,52 @@ exports.getExpense=(req,res,next)=>{
         .catch(err=>console.log(err))
 }
 
-exports.addExpense=(req,res,next)=>{
-    try{console.log(req.body,decodedId(req.headers.authorization))
-        expense.create({
+exports.addExpense=async(req,res,next)=>{
+    const t= await sequelize.transaction()
+    try{
+        // console.log(req.body,decodedId(req.headers.authorization),t)
+        const newExpense=await expense.create({
         expenseAmount:req.body.amount,
         description:req.body.description,
         category:req.body.cat,
         userDetailId:decodedId(req.headers.authorization).userid
-    }).then(expenseDetail=>{
-        user.findByPk(decodedId(req.headers.authorization).userid).then(user=>{
-            console.log('line 30 ',user)
-            user.update({totalAmount:user.totalAmount+parseFloat(req.body.amount)}).then(()=>{
-                user.save()
-            })
-        }).catch(e=>console.log(e))
-        console.log('Expense Created')
-        res.send(expenseDetail)
-    }).catch(err=>console.log(err))}
-    catch(e){
-        throw new Error(e)
+    },{transaction:t})
+        const newUser= await user.findByPk(decodedId(req.headers.authorization).userid)
+        const updatedUser= await newUser.update({
+            totalAmount:newUser.totalAmount+parseFloat(req.body.amount)
+        },{
+            transaction:t
+        })
+        // console.log(updatedUser,'updatedUser')
+        if (updatedUser[0] === 0) {
+            throw new Error("No rows were updated");
+        }
+        await t.commit()
+    }catch(err){
+        console.log('newError',err)
+        await t.rollback()
+    }}
+exports.deleteExpense=async (req,res,next)=>{
+    const t= await sequelize.transaction()
+    try{
+        const expenseFound=await expense.findByPk(req.body.id)
+        console.log(req.headers,req.body,decodedId(req.body.token))
+        const newUser= await user.findByPk(decodedId(req.body.token).userid)
+        const updatedUser= await newUser.update({
+            totalAmount:newUser.totalAmount-parseFloat(expenseFound.expenseAmount)
+        },{
+            transaction:t
+        })
+        await expenseFound.destroy({transaction:t})
+        if (updatedUser[0] === 0) {
+            throw new Error("No rows were updated");
+        }
+        await t.commit()
+        res.status(200).send({success:true,message:'Expense Deleted'})
+    }catch(err){
+        console.log(err)
+        await t.rollback()
+        res.status(401).send({success:false,message:'Rolled back'})
     }
-}
-exports.deleteExpense=(req,res,next)=>{
-    
-    
-    console.log(req.body)
-    expense.findByPk(req.body.id).then(expenseFound=>{
-        if(decodedId(req.body.token).userid==expenseFound.userDetailId){
-            expenseFound.destroy()
-            res.status(200).send({success:true,message:'Expense Deleted'})
-        }
-        else{
-            res.status(401).send({success:false,message:'Not Your Expense'})
-        }
 
-        
-    })
-    .catch(e=>console.log(e))
-}
-
-exports.leaderBoard=(req,res,next)=>{
-    expense.findAll({order:[]})
 }

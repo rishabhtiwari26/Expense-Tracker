@@ -81,24 +81,20 @@
                 rmvbutton.addEventListener('click',function(){
                     deleteExpense(expense.id)
                 })
-                
-                let editbutton=document.createElement('button')
-                editbutton.innerText='Edit'
-                editbutton.id='edit'
 
-
-                li.append(document.createTextNode(expense.expenseAmount+'-'),document.createTextNode(expense.description+'-'),document.createTextNode(expense.category+' '),rmvbutton,editbutton)
+                li.append(document.createTextNode(expense.expenseAmount+'-'),document.createTextNode(expense.description+'-'),document.createTextNode(expense.category+' '),rmvbutton)
                 
                 let list=document.getElementById('expense')
                 list.appendChild(li)
             })
         }
-        function deleteExpense(id){
+        async function  deleteExpense(id){
             const obj={
                 id:id,
                 token:localStorage.getItem('token')
             }
-            axios.post('http://localhost:3000/expense/delete-expense',obj)
+            const deletedExpense=await axios.post('http://localhost:3000/expense/delete-expense',obj)
+            console.log(deletedExpense)
         }
 
         async function buyPremium(event){
@@ -130,10 +126,9 @@
                 alert('something went wrong')
             })
         }
-        function showLeaderBoard(){
-
-            axios.get('http://localhost:3000/premium/showleaderboard')
-            .then((result)=>{
+        async function showLeaderBoard(){
+            try{
+                const result= await axios.get('http://localhost:3000/premium/showleaderboard')
                 document.body.innerHTML+='<div id="leaderBoardId"><h2>Leader Board</h2></div><ul id="leaderboardlist" class="expenseClass"></ul>'
                 result.data.forEach((detail)=>{
                     let li= document.createElement('li')
@@ -141,8 +136,11 @@
                     let list=document.getElementById('leaderboardlist')
                     list.appendChild(li)
                 })
-            }).catch(e=>console.log(e))
-        }
+            }catch(e){
+                console.log(e)
+            }
+            
+            }
 
     </script>
 </body>

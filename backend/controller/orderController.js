@@ -2,6 +2,7 @@ const order = require('../model/orderModel')
 const Razorpay = require('razorpay')
 const user=require('../model/userModel')
 const jwt =require('jsonwebtoken')
+const sequelize = require('../util/database')
 function generateAccessToken(id,ispremiumuser){
     return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
 }
@@ -41,35 +42,28 @@ exports.purchaseMembership=(req,res,next)=>{
 
 }
 
-exports.updateMembership=(req,res,next)=>{
-    try{
+exports.updateMembership=async (req,res,next)=>{
         console.log('inside updatemembership')
         const {order_id,payment_id}=req.body
         // console.log(order_id,payment_id)
-        order.findOne({where:{orderid:order_id}})
-            .then(order=>{
-                order.update({paymentid:payment_id,status:'SUCCESSFUL'}).then(()=>{
-                    user.findOne({where:{id:decodedId(req.headers.authorization).userid}})
-                    .then((user)=>{
-                        user.update({ispremiumuser:true}).then(()=>{
-                            return res.status(202).json({sucess:true,message:'Transaction Successful',token:generateAccessToken(user.id,user.ispremiumuser)})
-                        }).catch(e=>{
-                            throw new Error(e)
-                        })
-                        
-                    }).catch(e=>{
-                        throw new Error(e)
-                    })
-                    
-                }).catch(e=>{
-                    throw new Error(e)
-                })
-            }).catch(e=>{
-                throw new Error(e)
-            })
-           
+        const t =await sequelize.transaction()
+        try{
+            const reqUser= await user.findOne({where:{id:decodedId(req.headers.authorization).userid}})
+            // console.log(reqUser,'reqUser')
+            const newOrder=await order.findOne({where:{orderid:order_id}})
+            // console.log(newOrder,'newOrder')
+            await newOrder.update({paymentid:payment_id,status:'SUCCESSFUL'},{transaction:t})
+            await reqUser.update({ispremiumuser:true},{transaction:t})
+            // console.log(updatedOrder,'updatedOrder',updatedUser,'updatedUser')
+            // if(updatedOrder[0]===0 || updatedUser[0]===0){
+            //     console.log('inside if statement')
+            //     throw new Error('Not able to update')
+            // }
+            await t.commit()
+            console.log('before return')
+            return res.status(202).json({sucess:true,message:'Transaction Successful',token:generateAccessToken(user.id,user.ispremiumuser)})
     }catch(e){
-        console.log('inside updatemembership catch')
-        console.log(e)
+        await t.rollback()
+        console.log('transaction failed',e)
+        }
     }
-}
