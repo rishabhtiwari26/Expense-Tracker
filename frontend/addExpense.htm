@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add-Expense</title>
+    <style>
+        table, th, td {
+          border:1px solid black;
+          border-collapse: collapse;
+        }
+        </style>
 </head>
 <body onload="getExpense()">
     <header id="main-header" class="bg-success text-white p-4 mb-3">
@@ -19,16 +25,45 @@
             <option value="Food">Food</option>
             <option value="Transport">Transport</option>
             <option value="Personal">Personal</option>
+            <option value="Life Style">Life Style</option>
+            <option value="Grocery">Grocery</option>
         </select>
         <button type="submit" class="btn btn-dark" onclick="postExpense()">Add Expense</button>
     </form>
     <button id="buyPremium" onclick="buyPremium(event)">Buy premium</button>
     <button id="showLeaderBoard" onclick="showLeaderBoard(event)">Show Leader-Board</button>
+    <table id="expenseTable" style="width:100%">
+        <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Income</th>
+            <th>Expense</th>
+          </tr>
+    </table><br><br>
+    <table id="yearlyReport" style="width:100%">
+        <caption>Yearly Report</caption>
+        <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Expense</th>
+            <th>Savings</th>
+          </tr>
+    </table>
+    <br><br>
+    <table id="NotesReport" style="width:100%">
+        <caption>Notes Report</caption>
+        <tr>
+            <th>Date</th>
+            <th>Notes</th>
+          </tr>
+    </table><br><br>
     <ul id="expense" class="expenseClass">
         
     </ul>
     <div id="newdiv"></div>
     </div>
+    <button type="button">Download</button>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -73,6 +108,30 @@
             const expenses = await axios.get('http://localhost:3000/expense/get-expense',{headers:{'Authorization':token}})
             
             expenses.data.forEach(expense=>{
+                let table=document.getElementById('expenseTable')
+                let row =table.insertRow()
+
+                const date=expense.createdAt.split('T')[0];
+                console.log(date,expense.createdAt)
+                const income=expense.income
+                const expenseFound=expense.expenseAmount
+                
+                row.insertCell(0).innerHTML=(date)
+                row.insertCell(1).innerHTML=(expense.description)
+                row.insertCell(2).innerHTML=(expense.category)
+                if(income){
+                    row.insertCell(3).innerHTML=(income)
+                }
+                else{
+                    row.insertCell(3).innerHTML=''
+                }
+                if(expenseFound){
+                    row.insertCell(4).innerHTML=(expenseFound)
+                }
+                else{
+                    row.insertCell(4).innerHTML=''
+                }   
+
                 let li= document.createElement('li')
                 li.class='detailsList';
                 let rmvbutton=document.createElement('button')
