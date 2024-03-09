@@ -67,3 +67,7 @@ exports.updateMembership=async (req,res,next)=>{
     catch(e){
         throw new Error(e)
     }
+
+
+    
+    )

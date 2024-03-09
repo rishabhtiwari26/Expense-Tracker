@@ -30,11 +30,7 @@ exports.addExpense=async(req,res,next)=>{
         userDetailId:decodedId(req.headers.authorization).userid
     },{transaction:t})
         const newUser= await user.findByPk(decodedId(req.headers.authorization).userid)
-        const updatedUser= await newUser.update({
-            totalAmount:newUser.totalAmount+parseFloat(req.body.amount)
-        },{
-            transaction:t
-        })
+        const updatedUser= await newUser.update({totalAmount:newUser.totalAmount+parseFloat(req.body.amount)},{transaction:t})
         // console.log(updatedUser,'updatedUser')
         if (updatedUser[0] === 0) {
             throw new Error("No rows were updated");

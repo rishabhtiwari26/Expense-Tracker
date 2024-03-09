@@ -5,6 +5,8 @@ let count=1
 // console.log(process.env.TOKEN_SECRET)
 function generateAccessToken(id,ispremiumuser){
     return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+
+
 }
 exports.signUp=(req,res,next)=>{
     // console.log(count,req.body)
