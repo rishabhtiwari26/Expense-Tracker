@@ -63,7 +63,7 @@
     </ul>
     <div id="newdiv"></div>
     </div>
-    <button type="button">Download</button>
+    <button onclick="download()" id="downloadexpense">Download File</button>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -200,7 +200,26 @@
             }
             
             }
-
+        function download(){
+            const token = localStorage.getItem('token');
+            axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+            .then((response) => {
+                console.log(response)
+                if(response.status === 200){
+                    //console.log(response.data)
+                    let a = document.createElement("a");
+                    a.href = response.data.fileURL;
+                    a.download = 'myexpense.csv'
+                    a.click();
+                } else {
+                    throw new Error(response.data.message)
+                }
+        
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+        }
     </script>
 </body>
 </html>

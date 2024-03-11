@@ -1,7 +1,6 @@
 const Sequelize  = require('sequelize')
 const sequelize=require('../util/database')
 
-
 const passwordLink = sequelize.define('ForgotPasswordRequests',{
     id:{
         allowNull:false,
@@ -15,6 +14,5 @@ const passwordLink = sequelize.define('ForgotPasswordRequests',{
     isactive:{
         type:Sequelize.BOOLEAN
     }
-}
-)
+})
 module.exports=passwordLink
