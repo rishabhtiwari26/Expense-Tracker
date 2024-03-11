@@ -1,0 +1,23 @@
+let table=document.getElementById('expenseTable')
+let row =table.insertRow()
+
+const date=expense.createdAt.split('T')[0];
+console.log(date,expense.createdAt)
+const income=expense.income
+const expenseFound=expense.expenseAmount
+
+row.insertCell(0).innerHTML=(date)
+row.insertCell(1).innerHTML=(expense.description)
+row.insertCell(2).innerHTML=(expense.category)
+if(income){
+    row.insertCell(3).innerHTML=(income)
+}
+else{
+    row.insertCell(3).innerHTML=''
+}
+if(expenseFound){
+    row.insertCell(4).innerHTML=(expenseFound)
+}
+else{
+    row.insertCell(4).innerHTML=''
+}

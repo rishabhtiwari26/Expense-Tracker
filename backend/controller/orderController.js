@@ -61,7 +61,8 @@ exports.updateMembership=async (req,res,next)=>{
             // }
             await t.commit()
             console.log('before return')
-            return res.status(202).json({sucess:true,message:'Transaction Successful',token:generateAccessToken(user.id,user.ispremiumuser)})
+            // console.log(reqUser)
+            return res.status(202).json({sucess:true,message:'Transaction Successful',token:generateAccessToken(reqUser.id,reqUser.ispremiumuser)})
     }catch(e){
         await t.rollback()
         console.log('transaction failed',e)

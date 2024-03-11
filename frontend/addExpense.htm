@@ -58,17 +58,71 @@
             <th>Notes</th>
           </tr>
     </table><br><br>
-    <ul id="expense" class="expenseClass">
+    <ul id="expenseUL" class="expenseClass">
         
     </ul>
     <div id="newdiv"></div>
     </div>
+    <div id="paginationDiv"></div>
     <button onclick="download()" id="downloadexpense">Download File</button>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script >
-        let showLeaderBoardButton =false
+        
+        
+        function showPagination({
+            previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage}){
+            //console.log(previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage)
+            document.getElementById('paginationDiv').innerHTML=''
+                if(hasPreviousPage){
+                const b0=document.createElement('button')
+                b0.innerHTML=previousPage
+                b0.addEventListener('click',() => listExpense(previousPage))
+                document.getElementById('paginationDiv').appendChild(b0)
+            }
+            const b1=document.createElement('button')
+            b1.innerHTML=`<h3>${currentPage}</h3>`
+            document.getElementById('paginationDiv').appendChild(b1)
+            
+            if(hasNextPage){
+                const b2=document.createElement('button')
+                b2.innerHTML=nextPage
+                b2.addEventListener('click',() => listExpense(nextPage))
+                document.getElementById('paginationDiv').appendChild(b2)
+            }
+        }
+
+        function listExpense(page){
+            const token=localStorage.getItem('token')
+            axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token}})
+                .then(({data:{expenses,...pageData}})=>{
+                    //console.log('expenses',expenses,'pageData',pageData)
+                    showExpense(expenses)
+                    showPagination(pageData)
+                }).catch(e=>{
+                    console.log(e)
+                })
+        }
+
+        function showExpense(expenses){
+           //console.log(expenses)
+            let list=document.getElementById('expenseUL')
+            list.innerHTML=''
+            expenses.forEach(expense=>{
+                let li= document.createElement('li')
+                li.class='detailsList';
+                let rmvbutton=document.createElement('button')
+                rmvbutton.id='remove'
+                rmvbutton.innerText='Remove'
+                rmvbutton.addEventListener('click',function(){
+                    deleteExpense(expense.id)
+                })
+                li.append(document.createTextNode(expense.expenseAmount+'-'),document.createTextNode(expense.description+'-'),document.createTextNode(expense.category+' '),rmvbutton)
+                list.appendChild(li)
+            })
+        }
+
         function showPremiumUserMessage(){
             const premiumButton=document.getElementById('buyPremium')
             const premiumUser=document.createElement('p')
@@ -101,51 +155,16 @@
         async function getExpense(){
             const token=localStorage.getItem('token')
             const decodedToken=parseJwt(token)
-            console.log(decodedToken)
+            const page =1;
             if(decodedToken.ispremiumuser==true){
                 showPremiumUserMessage()
             }
-            const expenses = await axios.get('http://localhost:3000/expense/get-expense',{headers:{'Authorization':token}})
-            
-            expenses.data.forEach(expense=>{
-                let table=document.getElementById('expenseTable')
-                let row =table.insertRow()
-
-                const date=expense.createdAt.split('T')[0];
-                console.log(date,expense.createdAt)
-                const income=expense.income
-                const expenseFound=expense.expenseAmount
-                
-                row.insertCell(0).innerHTML=(date)
-                row.insertCell(1).innerHTML=(expense.description)
-                row.insertCell(2).innerHTML=(expense.category)
-                if(income){
-                    row.insertCell(3).innerHTML=(income)
-                }
-                else{
-                    row.insertCell(3).innerHTML=''
-                }
-                if(expenseFound){
-                    row.insertCell(4).innerHTML=(expenseFound)
-                }
-                else{
-                    row.insertCell(4).innerHTML=''
-                }   
-
-                let li= document.createElement('li')
-                li.class='detailsList';
-                let rmvbutton=document.createElement('button')
-                rmvbutton.id='remove'
-                rmvbutton.innerText='Remove'
-                rmvbutton.addEventListener('click',function(){
-                    deleteExpense(expense.id)
-                })
-
-                li.append(document.createTextNode(expense.expenseAmount+'-'),document.createTextNode(expense.description+'-'),document.createTextNode(expense.category+' '),rmvbutton)
-                
-                let list=document.getElementById('expense')
-                list.appendChild(li)
-            })
+            const expenses = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token}})
+            const expensesList=expenses.data.expenses
+            const pageData=expenses.data
+            //console.log('expensesList',expensesList,'pageData',pageData)
+            showExpense(expensesList)
+            showPagination(pageData)
         }
         async function  deleteExpense(id){
             const obj={
@@ -173,6 +192,7 @@
                     const premiumUser=document.createElement('p')
                     premiumUser.innerText='You are a premium user now'
                     premiumButton.parentNode.replaceChild(premiumUser,premiumButton)
+                    console.log(res.data)
                     localStorage.setItem('token',res.data.token)
                 }
             }

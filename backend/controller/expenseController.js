@@ -3,6 +3,7 @@ const Expense = require('../model/expenseModel')
 const User = require('../model/userModel')
 const DownloadExpense=require('../model/downloadExpenseModels')
 
+
 const jwt =require('jsonwebtoken')
 const AWS=require('aws-sdk')
 
@@ -59,17 +60,39 @@ exports.downloadExpense=async (req,res,next)=>{
 }
 
 exports.getExpense=(req,res,next)=>{
+
+    try{const expensePerPage=2
     console.log(req.headers.authorization)
     const userId=decodedId(req.headers.authorization).userid
+    const page=Number(req.query.page)
     // console.log('userId',userId)
+    Expense.count({where:{userDetailId:userId}})
+        .then((total)=>{
+            const totalNoOfExpense=total
+            Expense.findAll({
+                where:{userDetailId:userId},
+                offset:(page-1)*expensePerPage,
+                limit:expensePerPage
+                })
+                .then(expenses=>{
+                    // console.log(expenses)
+                    console.log('page',page,'expenses',expenses)
+                    res.send({
+                        expenses:expenses,
+                        currentPage:page,
+                        hasNextPage:page*expensePerPage<totalNoOfExpense,
+                        nextPage:page+1,
+                        hasPreviousPage:page>1,
+                        previousPage:page-1,
+                        totalPage:Math.ceil(totalNoOfExpense/expensePerPage)
+                    })
+                })
+                .catch(err=>console.log(err))
+            })}catch(err){
+                console.log(err)
+            }
+        }
     
-    Expense.findAll({where:{userDetailId:userId}})
-        .then(expenses=>{
-            // console.log(expenses)
-            res.send(expenses)
-        })
-        .catch(err=>console.log(err))
-}
 
 exports.addExpense=async(req,res,next)=>{
     const t= await sequelize.transaction()
