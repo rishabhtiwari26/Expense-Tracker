@@ -72,8 +72,10 @@
         
         
         function showPagination({
+
             previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage}){
             //console.log(previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage)
+            
             document.getElementById('paginationDiv').innerHTML=''
                 if(hasPreviousPage){
                 const b0=document.createElement('button')
@@ -91,11 +93,38 @@
                 b2.addEventListener('click',() => listExpense(nextPage))
                 document.getElementById('paginationDiv').appendChild(b2)
             }
+            let label = document.createElement("label");
+            label.innerText = "Rows per Page";
+            label.setAttribute("for", "rowsPerPage")
+
+            let rowsPerPage = document.createElement("select")
+            rowsPerPage.setAttribute("id", "rowsPerPage");
+
+            let minRow=5
+            for(let i=0;i<4;i++){
+                let rowValue=document.createElement('option')
+                rowValue.text=minRow
+                rowsPerPage.add(rowValue)  
+                minRow=minRow*2
+            }
+
+            let storedRows=localStorage.getItem('rowsPerPage')
+            if(storedRows){
+                rowsPerPage.value=storedRows
+            }
+            document.getElementById('paginationDiv').appendChild(label)
+            document.getElementById('paginationDiv').appendChild(rowsPerPage)
+            rowsPerPage.addEventListener('change',function(){
+                let selectValue=rowsPerPage.value
+                localStorage.setItem('rowsPerPage',selectValue)
+                listExpense(currentPage)
+            })
         }
 
         function listExpense(page){
             const token=localStorage.getItem('token')
-            axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token}})
+            const rowsPerPage=localStorage.getItem('rowsPerPage')
+            axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':rowsPerPage}})
                 .then(({data:{expenses,...pageData}})=>{
                     //console.log('expenses',expenses,'pageData',pageData)
                     showExpense(expenses)
@@ -154,15 +183,18 @@
         }
         async function getExpense(){
             const token=localStorage.getItem('token')
+            const defaultRows='5'
+            
             const decodedToken=parseJwt(token)
             const page =1;
             if(decodedToken.ispremiumuser==true){
                 showPremiumUserMessage()
             }
-            const expenses = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token}})
+            const expenses = await axios.get(`http://localhost:3000/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':defaultRows}})
             const expensesList=expenses.data.expenses
             const pageData=expenses.data
             //console.log('expensesList',expensesList,'pageData',pageData)
+            localStorage.setItem('rowsPerPage','5')
             showExpense(expensesList)
             showPagination(pageData)
         }
