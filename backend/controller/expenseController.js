@@ -9,7 +9,7 @@ const AWS=require('aws-sdk')
 
 
 function decodedId(token){
-    return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.verify(token,process.env.TOKEN_SECRET)
 }
 function uploadToS3(data,filename){
     const BUCKET_NAME='expensetracker26';

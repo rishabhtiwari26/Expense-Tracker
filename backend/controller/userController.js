@@ -4,7 +4,7 @@ const jwt =require('jsonwebtoken')
 let count=1
 // console.log(process.env.TOKEN_SECRET)
 function generateAccessToken(id,ispremiumuser){
-    return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.sign({userid:id,ispremiumuser},process.env.TOKEN_SECRET)
 
 
 }

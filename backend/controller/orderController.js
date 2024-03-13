@@ -4,18 +4,18 @@ const user=require('../model/userModel')
 const jwt =require('jsonwebtoken')
 const sequelize = require('../util/database')
 function generateAccessToken(id,ispremiumuser){
-    return jwt.sign({userid:id,ispremiumuser},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.sign({userid:id,ispremiumuser},process.env.TOKEN_SECRET)
 }
 function decodedId(token){
-    return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.verify(token,process.env.TOKEN_SECRET)
 }
 
 exports.purchaseMembership=(req,res,next)=>{
     try{
         // console.log(req.user,req.body)
         let rzp=new Razorpay({
-            key_id:'rzp_test_KFINKLK6tJLxP8',
-            key_secret:'t7fsZ4SMqOKYSclA8xnhMyCe'
+            key_id:process.env.RAZORPAY_KEY_ID,
+            key_secret:process.env.RAZORPAY_KEY_SECRET
         })
         const amount=2500
         rzp.orders.create({amount,currency:'INR'},(err,order)=>{

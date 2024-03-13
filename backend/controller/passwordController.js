@@ -10,10 +10,10 @@ apiKey.apiKey=process.env.API_KEY
 const jwt =require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 function generateAccessToken(id,isactive){
-    return jwt.sign({userid:id,isactive},'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.sign({userid:id,isactive},process.env.TOKEN_SECRET)
 }
 function decodedId(token){
-    return jwt.verify(token,'jkasdhakjbdwjk2kj2oieu2eu2ej2ue92')
+    return jwt.verify(token,process.env.TOKEN_SECRET)
 }
 
 

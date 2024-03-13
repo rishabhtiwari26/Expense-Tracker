@@ -2,7 +2,6 @@ const expense = require('../model/expenseModel')
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database'); 
 const user =require('../model/userModel');
-const { use } = require('../route/userRoute');
 
 
 
