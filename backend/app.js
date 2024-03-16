@@ -1,9 +1,10 @@
 const express = require('express')
+const dotenv=require('dotenv');
+dotenv.config()
 const cors = require('cors')
 const app = express()
 const bodyParser=require('body-parser')
 const sequelize  = require('./util/database')
-require('dotenv').config();
 const helmet = require('helmet')
 const compression=require('compression')
 const morgan=require('morgan')

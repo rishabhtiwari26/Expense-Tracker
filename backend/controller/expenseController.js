@@ -12,9 +12,9 @@ function decodedId(token){
     return jwt.verify(token,process.env.TOKEN_SECRET)
 }
 function uploadToS3(data,filename){
-    const BUCKET_NAME='expensetracker26';
-    const IAM_USER_KEY='AKIA47CRXVZNZHF3JE3Z'
-    const IAM_USER_SECRET='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'
+    const BUCKET_NAME=process.env.BUCKET_NAME;
+    const IAM_USER_KEY=process.env.IAM_USER_KEY
+    const IAM_USER_SECRET=process.env.IAM_USER_SECRET
     
     let s3bucket= new AWS.S3({
         accessKeyId:IAM_USER_KEY,
