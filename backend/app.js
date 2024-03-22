@@ -1,13 +1,11 @@
 const express = require('express')
 const dotenv=require('dotenv');
 dotenv.config()
+
 const cors = require('cors')
 const app = express()
 const bodyParser=require('body-parser')
 const sequelize  = require('./util/database')
-const helmet = require('helmet')
-const compression=require('compression')
-const morgan=require('morgan')
 const fs=require('fs')
 const path=require('path')
 
@@ -29,15 +27,26 @@ const accessLogStream=fs.createWriteStream(
 
 app.use(cors())
 app.use(bodyParser.json())
-app.use(helmet())
-app.use(compression())
-app.use(morgan('combined',{stream:accessLogStream}))
+
+
 
 app.use('/user',userRoute)
 app.use('/expense',expenseRoute)
 app.use('/purchase',orderRoute)
 app.use('/premium',premiumRoute)
 app.use('/password',passwordRoute)
+app.use('/reset_password.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'reset_password.htm'));
+});
+
+app.use('/addExpense.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'addExpense.htm'));
+});
+app.use((req,res,next)=>{
+    console.log('urll',req.url)
+    res.sendFile(path.join(__dirname, `views/${req.url}`))
+})
+
 
 user.hasMany(expense)
 expense.belongsTo(user,{constraint:true,onDelete:'CASCADE'})

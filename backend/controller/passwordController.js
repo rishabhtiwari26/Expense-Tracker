@@ -34,17 +34,18 @@ exports.forgetPassword=async (req,res,next)=>{
         .then((user)=>{
             passwordLink.create({
                 linkid:newLink,
-                userDetailId:user.id
+                userDetailId:user.id,
+                isactive:true
         },{transaction:t}).then(()=>{
-            t.commit()
             tranEmailApi.sendTransacEmail({
                 sender,
                 to:receiver,
                 Subject: 'OTP for password',
                 textContent:
                 `Please Click on the below link for reseting your password.
-                http://localhost:3000/password/resetpassword/${newLink}`
+                http://13.235.83.111/password/resetpassword/${newLink}`
             }).then(()=>{
+                t.commit()
                 res.status(201).send('Email sent')
             })
             .catch(e=>console.log(e))
@@ -70,7 +71,7 @@ exports.resetPassword=(req,res,next)=>{
                 foundLink.update({isactive:false}).then(()=>{
                     res.send(`<html>
 
-                            <form action=">
+                            <form>
                                 <label for="newpassword">Enter New password</label>
                                 <input name="newpassword" id='newpassword' type="password" required></input>
                                 <button type='button' onclick=newf()>reset password</button>
@@ -78,7 +79,7 @@ exports.resetPassword=(req,res,next)=>{
                             <script>
                                 function newf(){
                                     const password=document.getElementById('newpassword').value
-                                    const url='http://127.0.0.1:5500/reset_password.htm?message=Reset%20your%20password"&token=${newtoken}&pass='+password
+                                    const url='http://13.235.83.111/reset_password.htm?message=Reset%20your%20password"&token=${newtoken}&pass='+password
                                     window.location.href= url
                                 }
                             </script>
