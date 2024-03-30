@@ -43,7 +43,7 @@ exports.forgetPassword=async (req,res,next)=>{
                 Subject: 'OTP for password',
                 textContent:
                 `Please Click on the below link for reseting your password.
-                http://13.235.83.111/password/resetpassword/${newLink}`
+                http://13.201.166.92/password/resetpassword/${newLink}`
             }).then(()=>{
                 t.commit()
                 res.status(201).send('Email sent')
@@ -79,7 +79,7 @@ exports.resetPassword=(req,res,next)=>{
                             <script>
                                 function newf(){
                                     const password=document.getElementById('newpassword').value
-                                    const url='http://13.235.83.111/reset_password.htm?message=Reset%20your%20password"&token=${newtoken}&pass='+password
+                                    const url='http://13.201.166.92/reset_password.htm?message=Reset%20your%20password"&token=${newtoken}&pass='+password
                                     window.location.href= url
                                 }
                             </script>
@@ -103,16 +103,13 @@ exports.resetPassword=(req,res,next)=>{
 exports.newPassword=(req,res,next)=>{
     const t = sequelize.transaction()
     const userIdStatus=decodedId(req.body.token)
-    console.log(userIdStatus)
     user.findByPk(userIdStatus.userid).then(user=>{
         if(user){
-            console.log(req.body)
-            console.log(user)
+
             bcrypt.hash(req.body.newPassword,10,(err,hash)=>{
                 if(err){
                     throw new Error(e)
                 }
-                console.log(hash)
                 user.update({password:hash}).then(()=>{
                     res.status(200).send({message:'Password Being Updated',success:'true'})
                 }).catch(e=>{

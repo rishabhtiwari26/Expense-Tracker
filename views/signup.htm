@@ -28,8 +28,8 @@
                 email:document.getElementById('email').value,
                 password:document.getElementById('password').value
             }
-            console.log(obj)
-            axios.post('http://13.235.83.111/user/signup',obj)
+            
+            axios.post('http://13.201.166.92/user/signup',obj)
                 .then(res=>{  
                     if(res.data==='Email already exists'){
                         alert('Email Already exists')

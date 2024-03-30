@@ -42,7 +42,7 @@
         function showPagination({
 
             previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage}){
-            //console.log(previousPage,hasPreviousPage,currentPage,nextPage,hasNextPage,totalPage)
+            
             
             document.getElementById('paginationDiv').innerHTML=''
                 if(hasPreviousPage){
@@ -92,9 +92,9 @@
         function listExpense(page){
             const token=localStorage.getItem('token')
             const rowsPerPage=localStorage.getItem('rowsPerPage')
-            axios.get(`http://13.235.83.111/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':rowsPerPage}})
+            axios.get(`http://13.201.166.92/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':rowsPerPage}})
                 .then(({data:{expenses,...pageData}})=>{
-                    //console.log('expenses',expenses,'pageData',pageData)
+                    
                     showExpense(expenses)
                     showPagination(pageData)
                 }).catch(e=>{
@@ -103,7 +103,7 @@
         }
 
         function showExpense(expenses){
-           //console.log(expenses)
+           
             let list=document.getElementById('expenseUL')
             list.innerHTML=''
             expenses.forEach(expense=>{
@@ -143,7 +143,7 @@
                 token:localStorage.getItem('token')
             }
             console.log(obj)
-            axios.post('http://13.235.83.111/expense/add-expense',obj,{headers:{'Authorization':localStorage.getItem('token')}})
+            axios.post('http://13.201.166.92/expense/add-expense',obj,{headers:{'Authorization':localStorage.getItem('token')}})
             .then((expense)=>{
                 console.log(expense)
             } 
@@ -158,10 +158,10 @@
             if(decodedToken.ispremiumuser==true){
                 showPremiumUserMessage()
             }
-            const expenses = await axios.get(`http://13.235.83.111/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':defaultRows}})
+            const expenses = await axios.get(`http://13.201.166.92/expense/get-expense?page=${page}`,{headers:{'Authorization':token,'rowsPerPage':defaultRows}})
             const expensesList=expenses.data.expenses
             const pageData=expenses.data
-            //console.log('expensesList',expensesList,'pageData',pageData)
+            
             localStorage.setItem('rowsPerPage','5')
             showExpense(expensesList)
             showPagination(pageData)
@@ -171,19 +171,19 @@
                 id:id,
                 token:localStorage.getItem('token')
             }
-            const deletedExpense=await axios.post('http://13.235.83.111/expense/delete-expense',obj)
-            console.log(deletedExpense)
+            const deletedExpense=await axios.post('http://13.201.166.92/expense/delete-expense',obj)
+            
         }
 
         async function buyPremium(event){
             token=localStorage.getItem('token')
-            const response = await axios.get('http://13.235.83.111/purchase/premiummembership',{headers:{'Authorization':token}})
-            console.log(response)
+            const response = await axios.get('http://13.201.166.92/purchase/premiummembership',{headers:{'Authorization':token}})
+            
             let options = {
                 'key':response.data.key_id,
                 'order_id':response.data.order.id,
                 'handler': async function (response){
-                    const res=await axios.post('http://13.235.83.111/purchase/updatemembership',{
+                    const res=await axios.post('http://13.201.166.92/purchase/updatemembership',{
                         order_id:options.order_id,
                         payment_id:response.razorpay_payment_id
                     },{headers:{'Authorization':token}})
@@ -192,7 +192,7 @@
                     const premiumUser=document.createElement('p')
                     premiumUser.innerText='You are a premium user now'
                     premiumButton.parentNode.replaceChild(premiumUser,premiumButton)
-                    console.log(res.data)
+                    
                     localStorage.setItem('token',res.data.token)
                 }
             }
@@ -201,13 +201,13 @@
             event.preventDefault()
 
             rzp1.on('payment.failed',function(response){
-                console.log(response)
+                
                 alert('something went wrong')
             })
         }
         async function showLeaderBoard(){
             try{
-                const result= await axios.get('http://13.235.83.111/premium/showleaderboard')
+                const result= await axios.get('http://13.201.166.92/premium/showleaderboard')
                 document.body.innerHTML+='<div id="leaderBoardId"><h2>Leader Board</h2></div><ul id="leaderboardlist" class="expenseClass"></ul>'
                 result.data.forEach((detail)=>{
                     let li= document.createElement('li')
@@ -222,11 +222,11 @@
             }
         function download(){
             const token = localStorage.getItem('token');
-            axios.get('http://13.235.83.111/user/download', { headers: {"Authorization" : token} })
+            axios.get('http://13.201.166.92/user/download', { headers: {"Authorization" : token} })
             .then((response) => {
-                console.log(response)
+                
                 if(response.status === 200){
-                    //console.log(response.data)
+                    
                     let a = document.createElement("a");
                     a.href = response.data.fileURL;
                     a.download = 'myexpense.csv'

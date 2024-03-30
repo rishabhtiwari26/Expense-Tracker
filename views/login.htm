@@ -23,13 +23,13 @@
                 email:document.getElementById('email').value,
                 password:document.getElementById('password').value
             }
-            console.log(obj)
             
-            axios.post('http://13.235.83.111/user/login',obj)
+            
+            axios.post('http://13.201.166.92/user/login',obj)
                 .then(res=>{  
                     console.log(res)
                     if(res.data.success===true){
-                        console.log(res.data)
+                        
                         alert('Login successfully')
                         localStorage.setItem('token',res.data.token)
                         localStorage.setItem('rowsPerPage','5')
