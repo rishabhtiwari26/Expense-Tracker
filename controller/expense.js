@@ -1,7 +1,7 @@
 const sequelize = require('../util/database')
-const Expense = require('../model/expenseModel')
-const User = require('../model/userModel')
-const DownloadExpense=require('../model/downloadExpenseModels')
+const Expense = require('../model/expense')
+const User = require('../model/user')
+const DownloadExpense=require('../model/download-expense')
 
 
 const jwt =require('jsonwebtoken')

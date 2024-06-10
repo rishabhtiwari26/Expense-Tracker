@@ -42,9 +42,12 @@ app.use('/reset_password.htm', (req, res) => {
 app.use('/addExpense.htm', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'addExpense.htm'));
 });
-app.use((req,res,next)=>{
-    console.log('urll',req.url)
-    res.sendFile(path.join(__dirname, `views/${req.url}`))
+app.use((req, res, next) => {
+    if (req.url != '/favicon.ico') {
+        console.log('urll',req.url)
+        res.sendFile(path.join(__dirname, `views/${req.url}`))
+        
+    }
 })
 
 

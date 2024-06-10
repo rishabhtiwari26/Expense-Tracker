@@ -1,6 +1,6 @@
-const order = require('../model/orderModel')
+const order = require('../model/order')
 const Razorpay = require('razorpay')
-const user=require('../model/userModel')
+const user=require('../model/user')
 const jwt =require('jsonwebtoken')
 const sequelize = require('../util/database')
 function generateAccessToken(id,ispremiumuser){

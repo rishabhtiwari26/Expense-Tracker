@@ -1,7 +1,7 @@
-const expense = require('../model/expenseModel')
+const expense = require('../model/expense')
 const Sequelize = require('sequelize');
 const sequelize = require('../util/database'); 
-const user =require('../model/userModel');
+const user =require('../model/user');
 
 
 

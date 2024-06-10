@@ -1,6 +1,6 @@
 const express = require('express')
 const route=express.Router()
-const passwordController = require('../controller/passwordController')
+const passwordController = require('../controller/password')
 
 
 route.post('/forgotPassword',passwordController.forgetPassword)

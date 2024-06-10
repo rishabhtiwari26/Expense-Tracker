@@ -1,6 +1,6 @@
 const express = require('express')
 const route=express.Router()
-const premiumController = require('../controller/premiumController')
+const premiumController = require('../controller/premium')
 
 route.get('/showleaderboard',premiumController.showLeaderBoard)
 
