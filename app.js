@@ -5,21 +5,21 @@ dotenv.config()
 const cors = require('cors')
 const app = express()
 const bodyParser=require('body-parser')
-const sequelize  = require('./util/database')
 const fs=require('fs')
 const path=require('path')
 
-const user = require('./model/userModel')
-const expense = require('./model/expenseModel')
-const order=require('./model/orderModel')
-const passwordLink = require('./model/forgetPasswordModel')
-const downloadExpense=require('./model/downloadExpenseModels')
+const user = require('./model/user')
+const expense = require('./model/expense')
+const order=require('./model/order')
+const passwordLink = require('./model/forget-password')
+const downloadExpense = require('./model/download-expense')
+const connectionDB = require('./util/database');
 
-const userRoute=require('./route/userRoute')
-const expenseRoute=require('./route/expenseRoute')
-const orderRoute=require('./route/orderRoute')
-const premiumRoute=require('./route/premiumRoute')
-const passwordRoute=require('./route/passwordRoute')
+const userRoute=require('./route/user')
+const expenseRoute=require('./route/expense')
+const orderRoute=require('./route/order')
+const premiumRoute=require('./route/premium')
+const passwordRoute=require('./route/password')
 
 const accessLogStream=fs.createWriteStream(
     path.join(__dirname, 'access.log'),
@@ -39,33 +39,26 @@ app.use('/reset_password.htm', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'reset_password.htm'));
 });
 
+app.use('/signup.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'signup.htm'));
+});
+app.use('/login.htm', (req, res) => {
+    console.log('inside login')
+    res.sendFile(path.join(__dirname, 'views', 'login.htm'));
+});
+app.use('/forgetPassword.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'forgetPassword.htm'));
+});
+app.use('/reset_password.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'reset_password.htm'));
+});
 app.use('/addExpense.htm', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'addExpense.htm'));
 });
-app.use((req, res, next) => {
-    if (req.url != '/favicon.ico') {
-        console.log('urll',req.url)
-        res.sendFile(path.join(__dirname, `views/${req.url}`))
-        
-    }
+
+connectionDB()
+    .then(result => {
+    app.listen(3000)
+    }).catch(e => {
+    console.log(e)
 })
-
-
-user.hasMany(expense)
-expense.belongsTo(user,{constraint:true,onDelete:'CASCADE'})
-
-user.hasMany(order)
-order.belongsTo(user,{constraint:true,onDelete:'CASCADE'})
-
-user.hasMany(passwordLink)
-passwordLink.belongsTo(user,{constraint:true,onDelete:'CASCADE'})
-
-user.hasMany(downloadExpense)
-downloadExpense.belongsTo(user,{constraint:true,onDelete:'CASCADE'})
-
-sequelize.sync()
-    .then(res=>{
-        // console.log(res)
-        app.listen(process.env.PORT || 3000)
-    })
-    .catch(e=>console.log(e))

@@ -1,17 +1,14 @@
-const Sequelize  = require('sequelize')
-const sequelize=require('../util/database')
-
-const downloadExpense = sequelize.define('downloadLink',{
-    id:{
-        allowNull:false,
-        primaryKey:true,
-        autoIncrement:true,
-        type:Sequelize.INTEGER
+const mongoose = require('mongoose');
+const downloadSchema = new mongoose.Schema({
+    linkURL: {
+        type: String,
+        required: true
     },
-    linkURL:{
-        type:Sequelize.STRING,
-        allowNull:false
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
-}
-)
-module.exports=downloadExpense
+});
+const Download = mongoose.model('download', downloadSchema);
+
+module.exports = Download;

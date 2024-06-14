@@ -1,8 +1,11 @@
-const Sequelize = require('sequelize')
+const mongoose = require('mongoose');
 
-const sequelize = new Sequelize(process.env.DB_NAME,process.env.DB_USERNAME,process.env.DB_PASSWORD,{
-    dialect:'mysql',
-    host:process.env.DB_HOST
-})
+const connection = async () => {
+    try {
+        const connection = await mongoose.connect('mongodb+srv://rtiwari0726:xAwEWKupzKaXhvmW@expense-tracker.c29hy8s.mongodb.net/?retryWrites=true&w=majority&appName=Expense-Tracker');
+    } catch (er) {
+        console.log(er);
+    }
+}
 
-module.exports=sequelize
+module.exports = connection
