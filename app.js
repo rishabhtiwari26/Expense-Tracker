@@ -35,8 +35,8 @@ app.use('/expense',expenseRoute)
 app.use('/purchase',orderRoute)
 app.use('/premium',premiumRoute)
 app.use('/password',passwordRoute)
-app.use('/reset_password.htm', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'reset_password.htm'));
+app.use('/reset-password.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'reset-password.htm'));
 });
 
 app.use('/signup.htm', (req, res) => {
@@ -46,18 +46,19 @@ app.use('/login.htm', (req, res) => {
     console.log('inside login')
     res.sendFile(path.join(__dirname, 'views', 'login.htm'));
 });
-app.use('/forgetPassword.htm', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'forgetPassword.htm'));
+app.use('/forget-password.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'forget-password.htm'));
 });
-app.use('/reset_password.htm', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'reset_password.htm'));
+app.use('/reset-password.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'reset-password.htm'));
 });
-app.use('/addExpense.htm', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'addExpense.htm'));
+app.use('/add-expense.htm', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'add-expense.htm'));
 });
 
 connectionDB()
     .then(result => {
+        console.log('connection estlabish')
     app.listen(3000)
     }).catch(e => {
     console.log(e)
