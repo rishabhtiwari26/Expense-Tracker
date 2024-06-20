@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const ForgotPassword = require('../model/forget-password');
-const User = require('../model/user');
+const ForgotPassword = require('../models/forget-password');
+const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const Sib = require('sib-api-v3-sdk');
 const client = new Sib.TransactionalEmailsApi();

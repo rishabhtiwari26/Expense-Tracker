@@ -1,6 +1,6 @@
 const express = require('express')
 const route=express.Router()
-const expenseController = require('../controller/expense')
+const expenseController = require('../controllers/expense')
 
 route.post('/add-expense',expenseController.addExpense)
 route.post('/delete-expense',expenseController.deleteExpense)

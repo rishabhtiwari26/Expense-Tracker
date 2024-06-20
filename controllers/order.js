@@ -1,5 +1,5 @@
-const Order = require('../model/order');
-const User = require('../model/user');
+const Order = require('../models/order');
+const User = require('../models/user');
 const Razorpay = require('razorpay');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
