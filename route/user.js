@@ -1,7 +1,7 @@
 const express = require('express')
 const route=express.Router()
-const userController = require('../controller/userController')
-const expenseController = require('../controller/expenseController')
+const userController = require('../controller/user')
+const expenseController = require('../controller/expense')
 
 route.post('/signup',userController.signUp)
 route.post('/login',userController.login)

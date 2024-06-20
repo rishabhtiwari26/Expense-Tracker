@@ -14,8 +14,8 @@
         <button type="button" onclick="login()">Login</button>
     </form>
     
-    <a href="/index.htm">Sign-Up</a>
-    <a href="/forgetPassword.htm">Forget Password</a>
+    <a href="/signup.htm">Sign-Up</a>
+    <a href="/forget-password.htm">Forget Password</a>
     <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
     <script>
         function login(){
@@ -23,17 +23,17 @@
                 email:document.getElementById('email').value,
                 password:document.getElementById('password').value
             }
-            console.log(obj)
+            
             
             axios.post('http://localhost:3000/user/login',obj)
                 .then(res=>{  
                     console.log(res)
                     if(res.data.success===true){
-                        console.log(res.data)
+                        
                         alert('Login successfully')
                         localStorage.setItem('token',res.data.token)
                         localStorage.setItem('rowsPerPage','5')
-                        window.location.href= '/addExpense.htm'
+                        window.location.href= '/add-expense.htm'
                         
                     }
                 })
