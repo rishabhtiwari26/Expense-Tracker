@@ -1,4 +1,4 @@
-const User = require('../model/user');
+const User = require('../models/user');
 
 exports.showLeaderBoard = async (req, res, next) => {
     try {

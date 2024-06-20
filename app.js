@@ -8,18 +8,18 @@ const bodyParser=require('body-parser')
 const fs=require('fs')
 const path=require('path')
 
-const user = require('./model/user')
-const expense = require('./model/expense')
-const order=require('./model/order')
-const passwordLink = require('./model/forget-password')
-const downloadExpense = require('./model/download-expense')
-const connectionDB = require('./util/database');
+const user = require('./models/user')
+const expense = require('./models/expense')
+const order=require('./models/order')
+const passwordLink = require('./models/forget-password')
+const downloadExpense = require('./models/download-expense')
+const connectionDB = require('./utils/database');
 
-const userRoute=require('./route/user')
-const expenseRoute=require('./route/expense')
-const orderRoute=require('./route/order')
-const premiumRoute=require('./route/premium')
-const passwordRoute=require('./route/password')
+const userRoute=require('./routes/user')
+const expenseRoute=require('./routes/expense')
+const orderRoute=require('./routes/order')
+const premiumRoute=require('./routes/premium')
+const passwordRoute=require('./routes/password')
 
 const accessLogStream=fs.createWriteStream(
     path.join(__dirname, 'access.log'),

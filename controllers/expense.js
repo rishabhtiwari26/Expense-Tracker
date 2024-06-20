@@ -1,6 +1,6 @@
-const User = require('../model/user');
-const Expense = require('../model/expense');
-const Download = require('../model/download-expense');
+const User = require('../models/user');
+const Expense = require('../models/expense');
+const Download = require('../models/download-expense');
 
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
